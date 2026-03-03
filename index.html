@@ -46,10 +46,10 @@
 
 <div id="app">
     <div id="quiz">
-        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜コンビニ浪費編を毎月NISAで運用していたら？</span></h1>
+        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜コンビニ浪費編<br>毎月NISAで運用していたら？</span></h1>
         <div class="input-group">
-            <label>現在の年齢</label>
-            <input type="number" id="age" inputmode="numeric" min="15" max="80" placeholder="例: 25" >
+            <label>現在の年齢（18歳から80歳で入力）</label>
+            <input type="number" id="age" inputmode="numeric" min="18" max="80" placeholder="例: 25" >
         </div>
         <div class="input-group">
             <label>週の「ついで買い」回数</label>
@@ -68,7 +68,7 @@
 
     <div id="result">
         <div class="result-card">
-            <div class="result-label">本来手にするはずだった資産</div>
+            <div class="result-label">診断結果</div>
             <div id="result-rank">---</div>
             <div class="total-loss" id="totalLossDisplay">¥0</div>
 
@@ -137,7 +137,7 @@
             // 査定ロジック
             const avgLife = 85; 
             const yearsLeft = Math.max(1, avgLife - age);
-            const unitPrice = 750; 
+            const unitPrice = 500; 
             const monthlyCost = freq * 4.3 * unitPrice; 
             
             // 複利計算 (年利5%)
