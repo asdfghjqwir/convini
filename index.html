@@ -46,7 +46,7 @@
 
 <div id="app">
     <div id="quiz">
-        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜無意識のコンビニ浪費編〜</span></h1>
+        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜コンビニ浪費編〜</span></h1>
         <div class="input-group">
             <label>現在の年齢</label>
             <input type="number" id="age" inputmode="numeric" min="1" max="100" placeholder="例: 25" >
@@ -174,7 +174,7 @@
 
             // Amazonリンクの更新
             const amzLink = document.getElementById('amazonLink');
-            const keywords = ["水筒 おしゃれ", "家計簿 初心者", "貯金箱 面白い", "自炊 弁当箱"];
+            const keywords = ["水筒", "家計簿", "貯金箱", "弁当箱"];
             const searchWord = encodeURIComponent(keywords[Math.floor(Math.random() * keywords.length)]);
             amzLink.href = `https://www.amazon.co.jp/s?k=${searchWord}&tag=aicheck-22`;
 
