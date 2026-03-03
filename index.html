@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ドブ捨てマネー報告書：コンビニ編</title>
+    <title>ドブ捨てマネー報告書：コンビニ編 </title>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@900&display=swap" rel="stylesheet">
     <style>
         :root { --bg-color: #00F5FF; --accent-pink: #FF007F; --yellow: #FFD700; --black: #1A1A1A; }
@@ -46,7 +46,7 @@
 
 <div id="app">
     <div id="quiz">
-        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜コンビニ浪費編〜</span></h1>
+        <h1>🏪ドブ捨てマネー報告書<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜コンビニ浪費編を毎月NISAで運用していたら？</span></h1>
         <div class="input-group">
             <label>現在の年齢</label>
             <input type="number" id="age" inputmode="numeric" min="15" max="80" placeholder="例: 25" >
@@ -64,11 +64,11 @@
         <button class="btn-main" onclick="diagnose()">💸 損失を査定する</button>
     </div>
 
-    <div id="loading"><h2>📊 損失を計算中...</h2></div>
+    <div id="loading"><h2>複利の暴力を計算中...</h2></div>
 
     <div id="result">
         <div class="result-card">
-            <div class="result-label">査定結果</div>
+            <div class="result-label">本来手にするはずだった資産</div>
             <div id="result-rank">---</div>
             <div class="total-loss" id="totalLossDisplay">¥0</div>
 
@@ -125,7 +125,7 @@
         const age = parseInt(document.getElementById('age').value);
         const freq = parseInt(document.getElementById('frequency').value);
         
-        if (isNaN(age) || age < 15|| age > 80) { alert('15歳から80歳の間で正しく入力してください。'); return; }
+        if (isNaN(age) || age < 18|| age > 80) { alert('18歳から80歳の間で正しく入力してください。'); return; }
 
         document.getElementById('quiz').style.display = 'none';
         document.getElementById('loading').style.display = 'block';
