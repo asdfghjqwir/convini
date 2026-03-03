@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【2026版】生涯損失査定マシン：コンビニ編</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@900&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #00F5FF; --accent-pink: #FF007F; --yellow: #FFD700; --black: #1A1A1A; }
+        body { background-color: var(--bg-color); font-family: 'M PLUS Rounded 1c', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: background-color 0.5s ease; }
+        #app { width: 100%; max-width: 380px; background: #fff; border: 5px solid var(--black); border-radius: 30px; box-shadow: 10px 10px 0px var(--black); padding: 30px 20px; text-align: center; box-sizing: border-box; }
+        
+        #quiz, #loading, #result { display: none; }
+        #quiz { display: block; }
+        
+        h1 { font-size: 1.4rem; margin-bottom: 25px; line-height: 1.4; color: var(--black); }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { font-size: 0.8rem; font-weight: 900; color: var(--black); margin-left: 5px; }
+        select, input { width: 100%; padding: 15px; border: 4px solid var(--black); border-radius: 15px; margin-top: 8px; font-size: 1.1rem; font-weight: 900; box-sizing: border-box; outline: none; background: #fff; }
+        
+        .result-card { background: #fff; border: 4px solid var(--black); border-radius: 25px; padding: 40px 15px 20px; margin-bottom: 25px; position: relative; }
+        .result-label { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--yellow); color: var(--black); font-size: 0.9rem; padding: 6px 25px; border-radius: 50px; border: 4px solid var(--black); white-space: nowrap; box-shadow: 4px 4px 0px var(--black); }
+
+        #result-rank { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .total-loss { font-size: 3.2rem; font-weight: 900; color: var(--accent-pink); line-height: 1; margin: 15px 0; text-shadow: 3px 3px 0px var(--black); word-break: break-all; }
+        
+        .section-box { border-top: 4px solid var(--black); margin: 20px 0 10px; padding-top: 15px; text-align: left; }
+        .tag { color: #fff; font-size: 0.7rem; padding: 3px 12px; border-radius: 8px; border: 2px solid var(--black); display: inline-block; margin-bottom: 8px; font-weight: 900; }
+        .desc { font-size: 0.85rem; font-weight: 900; color: var(--black); line-height: 1.5; }
+
+        .solution-list { list-style: none; padding: 0; margin: 5px 0 0; }
+        .solution-list li { font-size: 0.85rem; font-weight: 900; margin-bottom: 5px; position: relative; padding-left: 20px; color: var(--black); }
+        .solution-list li::before { content: "✔"; position: absolute; left: 0; color: var(--accent-pink); }
+
+        .share-btn { width: 100%; padding: 16px; border: 4px solid var(--black); border-radius: 50px; font-weight: 900; font-size: 1.1rem; cursor: pointer; background: #000 !important; color: #fff !important; box-shadow: 0 6px 0px #444; transition: 0.1s; margin-bottom: 15px; display: block; text-decoration: none; font-family: inherit; border: none; }
+        .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0px #444; }
+
+        .physics-button { width: 100%; padding: 14px; border: 4px solid var(--black); border-radius: 20px; font-weight: 900; cursor: pointer; background: var(--yellow); color: var(--black); box-shadow: 0 8px 0px var(--black); transition: 0.1s; display: block; text-decoration: none; box-sizing: border-box; text-align: center; margin-bottom: 15px; font-size: 0.95rem; }
+        .physics-button:active { transform: translateY(6px); box-shadow: 0 2px 0px var(--black); }
+
+        .coffee-button { width: 100%; padding: 14px; border: 4px solid var(--black); border-radius: 20px; font-weight: 900; cursor: pointer; background: #ffffff; color: #000; box-shadow: 0 8px 0px var(--black); transition: 0.1s; display: block; text-decoration: none; box-sizing: border-box; text-align: center; margin-bottom: 15px; font-size: 0.95rem; }
+        .coffee-button:active { transform: translateY(6px); box-shadow: 0 2px 0px var(--black); }
+
+        .btn-main { width: 100%; padding: 18px; border: 4px solid var(--black); border-radius: 50px; font-weight: 900; font-size: 1.1rem; background: var(--yellow); box-shadow: 0 6px 0px var(--black); cursor: pointer; font-family: inherit; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="quiz">
+        <h1>🏪 生涯損失査定マシン<br><span style="font-size: 0.8em; color: var(--accent-pink);">〜無意識のコンビニ浪費編〜</span></h1>
+        <div class="input-group">
+            <label>現在の年齢 (18歳〜80歳を推奨)</label>
+            <input type="number" id="age" inputmode="numeric" min="1" max="100" value="25">
+        </div>
+        <div class="input-group">
+            <label>週の「ついで買い」回数</label>
+            <select id="frequency">
+                <option value="1">週1回（意識高い系）</option>
+                <option value="3" selected>週3回（カモ予備軍）</option>
+                <option value="5">週5回（コンビニの養分）</option>
+                <option value="7">毎日（もはや店主）</option>
+                <option value="14">1日2回（給料の直葬）</option>
+            </select>
+        </div>
+        <button class="btn-main" onclick="diagnose()">💸 損失を査定する</button>
+    </div>
+
+    <div id="loading"><h2>📊 損失を計算中...</h2></div>
+
+    <div id="result">
+        <div class="result-card">
+            <div class="result-label">診断結果</div>
+            <div id="result-rank">---</div>
+            <div class="total-loss" id="totalLossDisplay">¥0</div>
+
+            <div class="section-box">
+                <span class="tag" style="background: var(--bg-color); color: var(--black);">余計なお世話</span>
+                <div class="desc" id="jokeText" style="font-style: italic;"></div>
+            </div>
+
+            <div class="section-box" style="background: #f9f9f9; padding: 15px; border-radius: 15px; border: 3px solid var(--black);">
+                <span class="tag" style="background: var(--black); color: #fff;">脱出コマンド</span>
+                <ul class="solution-list" id="solutions">
+                    </ul>
+            </div>
+        </div>
+        
+        <button class="share-btn" onclick="shareX()" style="background: #000; color: #fff; border: none; box-shadow: 0 6px 0px #444;">
+            🐦 Xで恥を晒す
+        </button>
+        
+        <a href="https://www.amazon.co.jp/s?k=タイムロッキングコンテナ&tag=aicheck-22" target="_blank" class="physics-button" style="background: #FF9900; color: #000; border: 4px solid #000; box-shadow: 0 8px 0px #000;">
+            📦 Amazonで脱出アイテムをゲット
+        </a>
+
+       
+    </div>
+</div>
+
+<script>
+    const jokes = [
+        "あなたの財布、底に穴空いてませんか？あ、脳の方でしたか。",
+        "そのホットスナック、一口であなたの未来の1万円が消えてますよ。",
+        "コンビニの自動ドアが開くたび、あなたの寿命のカウントダウンが加速してます。",
+        "「自分へのご褒美」が多すぎて、もはや毎日が表彰式ですね。",
+        "あなたが買ったラテ代、20年後の新NISAならハワイ旅行代でしたよ。",
+        "新商品のラベルを見る目だけは一流ですね。自分の人生の赤字は見えないのに。",
+        "レジ袋有料化を気にする前に、その中身の無駄を気にしたらどうですか？",
+        "あなたの人生、実質「コンビニの在庫処分場」になってませんか？",
+        "店員さんに「いつもありがとうございます（笑）」と裏で呼ばれてますよ。",
+        "糖分と一緒に、将来の選択肢も溶かして食べてる気分はどうですか？",
+        "「ついで買い」のついでに、自分の尊厳も売ってませんか？",
+        "そんなにコンビニが好きなら、もうレジの中に住めばいいじゃないですか。",
+        "最新のスイーツを追うスピードで、借金が追いかけてきてますよ。",
+        "1226円の時給で働いて、数百円のゴミを光速で買う。最高にロックです。",
+        "あなたのスマホ決済、音が鳴るたびに「搾取！」って聞こえませんか？",
+        "健康診断の結果より、家計簿の絶望的な数値を見た方がいいですよ。",
+        "「期間限定」という言葉に踊らされる姿、見ていて飽きないピエロです。",
+        "2026年のインフレを舐めてます？その100円、将来の1000円ですよ。",
+        "無人レジでも、あなたの無能さは隠しきれていませんよ。",
+        "あなたが潤しているのは、あなたの喉ではなくフランチャイズ本部の腹です。"
+    ];
+
+    const escapeCommands = [
+        "コンビニの半径200mに近づかない",
+        "財布に「その買い物、死ぬほど必要？」と貼る",
+        "水筒を持ち歩き、コンビニ入店を物理的に禁じる"
+    ];
+
+    function diagnose() {
+        const age = parseInt(document.getElementById('age').value);
+        const freq = parseInt(document.getElementById('frequency').value);
+        
+        if (isNaN(age) || age < 1 || age > 100) { alert('1歳から100歳の間で入力してください。'); return; }
+
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('loading').style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            // 2026年ロジック
+            const avgLife = 85; 
+            const yearsLeft = Math.max(1, avgLife - age);
+            const unitPrice = 750; // 2026年物価（ついで買い単価）
+            const monthlyCost = freq * 4.3 * unitPrice; // 月額
+            
+            // 複利計算 (年利5%)
+            const r = 0.05 / 12; 
+            const n = yearsLeft * 12; 
+            const totalLoss = monthlyCost * (Math.pow(1 + r, n) - 1) / r;
+
+            let displayMoney = totalLoss >= 100000000 
+                ? (totalLoss / 100000000).toFixed(2) + "億円" 
+                : (Math.floor(totalLoss / 10000)).toLocaleString() + "万円";
+
+            document.getElementById('totalLossDisplay').innerText = `¥${displayMoney}`;
+
+            let rank = ""; let bgColor = "";
+            if (totalLoss >= 50000000) { rank = "国家予算レベルの無能"; bgColor = "#FF007F"; }
+            else if (totalLoss >= 20000000) { rank = "老後破産確定囚"; bgColor = "#4A148C"; }
+            else if (totalLoss >= 10000000) { rank = "コンビニのATM人間"; bgColor = "#FF4500"; }
+            else if (totalLoss >= 5000000) { rank = "糖分ジャンキー"; bgColor = "#00F5FF"; }
+            else { rank = "凡庸なカモ"; bgColor = "#43A047"; }
+            
+            document.body.style.backgroundColor = bgColor;
+            document.getElementById('result-rank').innerText = rank;
+            document.getElementById('jokeText').innerText = jokes[Math.floor(Math.random() * jokes.length)];
+
+            // 脱出コマンド挿入
+            const solList = document.getElementById('solutions');
+            solList.innerHTML = "";
+            escapeCommands.forEach(cmd => {
+                const li = document.createElement('li');
+                li.innerText = cmd;
+                solList.appendChild(li);
+            });
+
+            // Amazonリンク動的生成
+            const amzLink = document.getElementById('amazonLink');
+            amzLink.href = `https://www.amazon.co.jp/s?k=${encodeURIComponent("節約 水筒 貯金箱 禁欲")}&tag=loss-diag-22`;
+
+        }, 1500);
+    }
+
+    function shareX() {
+        const rank = document.getElementById('result-rank').innerText;
+        const loss = document.getElementById('totalLossDisplay').innerText;
+        const text = encodeURIComponent(`【生涯損失診断】\nコンビニの「ついで買い」を続けた結果、私の生涯損失（新NISA運用込）は「${loss}」でした。\nランク：${rank}\n#生涯損失査定マシン #2026年物価対応`);
+        window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    }
+</script>
+</body>
+</html>
